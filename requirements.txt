@@ -1,0 +1,13 @@
+# --- API Framework ---
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.6.0
+
+# --- Machine Learning & Data ---
+scikit-learn>=1.4.0
+pandas>=2.2.0
+numpy>=1.26.0
+
+# --- Testing & CI ---
+pytest>=8.0.0
+httpx>=0.26.0
