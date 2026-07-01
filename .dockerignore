@@ -11,7 +11,7 @@ env/
 .pytest_cache/
 
 # Development and Training files
-src/
+src/pipeline/
 tests/
 data/
 *.ipynb
