@@ -1,2 +1,5 @@
 venv/
-data/customer_support_tickets_200k.csv
+data/customer_support_tickets_200k.csv".env" 
+
+# env
+.env

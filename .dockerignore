@@ -1,0 +1,22 @@
+# Git
+.git
+.gitignore
+
+# Python caching and environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.pytest_cache/
+
+# Development and Training files
+src/
+tests/
+data/
+*.ipynb
+
+# IDEs
+.vscode/
+.idea/
+
