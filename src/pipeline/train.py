@@ -8,11 +8,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report
 import joblib
 from huggingface_hub import HfApi, create_repo
+from api.config import settings
 
-# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Define architectural paths
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = ROOT_DIR / "data"
 ARTIFACTS_DIR = ROOT_DIR / "artifacts"
@@ -58,26 +57,22 @@ def train_routing_model():
     logging.info(f"Saving temporary local artifact to {MODEL_PATH}")
     joblib.dump(model_pipeline, MODEL_PATH)
 
-    logging.info("Connecting to Hugging Face Registry...")
-    api = HfApi()
-    
-    # Dynamically fetch the authenticated username
-    user_info = api.whoami()
-    hf_username = user_info["name"]
-    repo_id = f"{hf_username}/smart-mail-router"
+    # --- REGISTRY LOGIC UTILIZING CENTRAL CONFIG ---
+    api = HfApi(token=settings.hf_token)
+    repo_id = settings.hf_repo_id
 
     logging.info(f"Ensuring private repository {repo_id} exists...")
     create_repo(repo_id=repo_id, repo_type="model", private=True, exist_ok=True)
 
-    logging.info(f"Uploading model artifact to the registry...")
+    logging.info("Uploading model artifact to the registry...")
     api.upload_file(
         path_or_fileobj=str(MODEL_PATH),
-        path_in_repo="router_model.joblib",
+        path_in_repo=settings.model_filename,
         repo_id=repo_id,
         repo_type="model"
     )
     
-    logging.info("Phase 1 Complete: Artifact successfully pushed to the remote registry.")
+    logging.info("Artifact successfully pushed to the remote registry.")
 
 if __name__ == "__main__":
     train_routing_model()

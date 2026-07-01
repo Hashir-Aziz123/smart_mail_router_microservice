@@ -1,15 +1,11 @@
 import logging
 from contextlib import asynccontextmanager
-from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-import joblib
 from sklearn.pipeline import Pipeline
+from src.utils.model_loader import fetch_and_load_model
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-ROOT_DIR = Path(__file__).resolve().parent.parent
-MODEL_PATH = ROOT_DIR / "artifacts" / "router_model.joblib"
 
 # Global state for the model
 routing_pipeline: Pipeline | None = None
@@ -17,11 +13,13 @@ routing_pipeline: Pipeline | None = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global routing_pipeline
-    if not MODEL_PATH.exists():
-        logging.error(f"Model artifact not found at {MODEL_PATH}. Prediction endpoints will fail.")
-    else:
-        logging.info("Loading routing model artifact into memory...")
-        routing_pipeline = joblib.load(MODEL_PATH)
+    try:
+        logging.info("Initializing remote model fetch sequence...")
+        routing_pipeline = fetch_and_load_model()
+        logging.info("Routing model loaded into memory successfully.")
+    except Exception as startup_error:
+        logging.critical(f"Failed to load model during startup: {str(startup_error)}")
+        # We allow the server to start so the /health endpoint can report the degraded status
     yield
     routing_pipeline = None
 
