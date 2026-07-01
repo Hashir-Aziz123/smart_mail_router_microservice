@@ -10,4 +10,5 @@ numpy>=1.26.0
 
 # --- Testing & CI ---
 pytest>=8.0.0
-httpx>=0.26.0huggingface_hub 
+httpx>=0.26.0
+huggingface_hub
