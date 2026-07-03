@@ -12,7 +12,6 @@ class Settings:
     Uses lazy evaluation for hf_repo_id to prevent blocking network calls during module import.
     """
     hf_token: str | None = os.getenv("HF_TOKEN")
-    model_filename: str = "router_model.joblib"
     
     # Internal cache for the dynamically resolved repo ID
     _hf_repo_id: str | None = os.getenv("HF_REPO_ID")

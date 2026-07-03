@@ -1,5 +1,6 @@
 venv/
-data/customer_support_tickets_200k.csv".env" 
+data/
+artifacts/
 
 # env
 .env
